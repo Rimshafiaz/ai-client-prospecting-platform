@@ -311,7 +311,7 @@ def send_approved_email(
         )
     )
     if int(sent_count or 0) >= settings.gmail_send_limit_per_day:
-        raise OutreachAttemptError("The SalesLens Gmail daily send limit has been reached.")
+        raise OutreachAttemptError("The OpportunityCue Gmail daily send limit has been reached.")
 
     try:
         client, encryption_key = configured_gmail_dependencies()

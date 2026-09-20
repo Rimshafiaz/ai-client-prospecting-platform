@@ -26,7 +26,7 @@ export function AppHeader() {
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-6 px-5 sm:px-8">
         <NavLink to="/dashboard" className="flex items-center">
           <span className="font-display text-[22px] font-bold tracking-[-0.04em] text-brand">
-            SalesLens
+            OpportunityCue
           </span>
         </NavLink>
         <div className="flex min-w-0 items-center gap-3 sm:gap-5">

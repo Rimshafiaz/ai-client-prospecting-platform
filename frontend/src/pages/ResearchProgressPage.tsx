@@ -365,9 +365,9 @@ export default function ResearchProgressPage() {
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
             {request.status === 'pending'
-              ? 'SalesLens saved the verified company and research scope. Start a bounded evidence review when you are ready.'
+              ? 'OpportunityCue saved the verified company and research scope. Start a bounded evidence review when you are ready.'
               : request.status === 'running'
-                ? 'SalesLens is collecting target-scoped public sources and excluding anything it cannot link to this business.'
+                ? 'OpportunityCue is collecting target-scoped public sources and excluding anything it cannot link to this business.'
                 : request.evidence_gate_reason}
           </p>
           {(goal || offering) && (
@@ -554,7 +554,7 @@ export default function ResearchProgressPage() {
             )}
             {generatePhase === 'polling' && (
               <p className="mt-3 font-narrative text-sm leading-relaxed text-ink-soft">
-                SalesLens is preparing the report from the accepted evidence. The
+                OpportunityCue is preparing the report from the accepted evidence. The
                 platform never sends outreach without your approval.
               </p>
             )}

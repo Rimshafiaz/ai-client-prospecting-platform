@@ -27,7 +27,7 @@ ObjectiveChip = Literal["service_pitch", "client_prospecting", "investment", "hi
 SUPPORTED_GOAL_TYPES: tuple[str, ...] = ("service_pitch", "client_prospecting")
 
 UNSUPPORTED_GOAL_MESSAGE = (
-    "That goal type is not supported yet. SalesLens currently finds local "
+    "That goal type is not supported yet. OpportunityCue currently finds local "
     "businesses with measurable digital-growth opportunities: pitching a "
     "service or finding clients. Jobs, investment, and other discovery modes "
     "come later."

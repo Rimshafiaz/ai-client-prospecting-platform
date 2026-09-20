@@ -261,7 +261,7 @@ function OutreachAttemptCard({
         </div>
       )}
       {attempt.channel === 'email' && attempt.status === 'sent' && <button type="button" disabled={working} onClick={() => void run('check-reply')} className="mt-3 rounded-control border border-secondary px-3 py-1.5 text-label-md font-medium text-secondary disabled:opacity-60">Check for reply</button>}
-      {attempt.channel === 'email' && attempt.status === 'replied' && <p className="mt-3 text-body-sm text-on-surface">A reply was detected in the SalesLens Gmail thread.</p>}
+      {attempt.channel === 'email' && attempt.status === 'replied' && <p className="mt-3 text-body-sm text-on-surface">A reply was detected in the OpportunityCue Gmail thread.</p>}
       {replyCheckMessage && <p className="mt-2 text-label-sm text-on-surface-variant">{replyCheckMessage}</p>}
       {attempt.outcome && <p className="mt-2 text-label-sm text-on-surface-variant">Outcome: {displayLabel(attempt.outcome)}</p>}
       {attempt.failure_reason && <p className="mt-2 text-label-sm text-error">{attempt.failure_reason}</p>}

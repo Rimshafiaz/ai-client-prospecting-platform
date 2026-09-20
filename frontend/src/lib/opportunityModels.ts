@@ -36,7 +36,7 @@ export function opportunityModelScopeForText(
   if (!hasWebIntent && !hasSocialIntent) {
     return {
       modelIds: [],
-      error: 'SalesLens currently supports Web & Conversion and Social Presence & Content. Make the offering more specific.',
+      error: 'OpportunityCue currently supports Web & Conversion and Social Presence & Content. Make the offering more specific.',
     }
   }
   if (hasSocialIntent) {

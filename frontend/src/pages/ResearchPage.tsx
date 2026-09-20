@@ -142,7 +142,7 @@ export default function ResearchPage() {
       <header>
       <h1 className="page-title">Research a company</h1>
       <p className="page-description">
-        Define what you offer and what you need to decide. SalesLens verifies the
+        Define what you offer and what you need to decide. OpportunityCue verifies the
         business identity before it creates an evidence-review request.
       </p>
       </header>
@@ -308,7 +308,7 @@ export default function ResearchPage() {
           ) : (
             <div className="mt-4">
               <Notice kind="info">
-                Adjust the company details or website and resolve again. SalesLens will
+                Adjust the company details or website and resolve again. OpportunityCue will
                 not create research for an ambiguous identity.
               </Notice>
             </div>

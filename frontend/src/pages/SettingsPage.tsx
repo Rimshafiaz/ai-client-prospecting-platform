@@ -88,10 +88,10 @@ export default function SettingsPage() {
               )}
             </div>
             {connection?.status === 'connected' && <p className="mt-3 text-body-sm text-on-surface">Connected as {connection.email}</p>}
-            {connection?.status === 'connected' && !connection.reply_tracking_enabled && <p className="mt-3 text-body-sm text-on-surface-variant">Reconnect once to grant Gmail metadata access for checking replies to SalesLens-created threads.</p>}
-            {connection?.reply_tracking_enabled && <p className="mt-3 text-body-sm text-on-surface-variant">Reply tracking is enabled for Gmail threads created by SalesLens.</p>}
-            {connection?.configured === false && <p className="mt-3 text-body-sm text-error">Gmail OAuth has not been configured on this SalesLens server.</p>}
-            <p className="mt-3 text-label-sm text-on-surface-variant">SalesLens never sends a draft without your approval.</p>
+            {connection?.status === 'connected' && !connection.reply_tracking_enabled && <p className="mt-3 text-body-sm text-on-surface-variant">Reconnect once to grant Gmail metadata access for checking replies to OpportunityCue-created threads.</p>}
+            {connection?.reply_tracking_enabled && <p className="mt-3 text-body-sm text-on-surface-variant">Reply tracking is enabled for Gmail threads created by OpportunityCue.</p>}
+            {connection?.configured === false && <p className="mt-3 text-body-sm text-error">Gmail OAuth has not been configured on this OpportunityCue server.</p>}
+            <p className="mt-3 text-label-sm text-on-surface-variant">OpportunityCue never sends a draft without your approval.</p>
           </div>
       </section>
       )}

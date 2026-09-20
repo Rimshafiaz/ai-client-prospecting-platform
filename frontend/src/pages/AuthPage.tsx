@@ -89,7 +89,7 @@ export default function AuthPage() {
             <div className="flex h-8 items-center gap-2">
               <SalesLensMark size={24} />
               <span className="font-display text-lg font-bold tracking-tight text-brand">
-                SalesLens
+                OpportunityCue
               </span>
             </div>
             <p className="text-label-md text-ink-soft">
