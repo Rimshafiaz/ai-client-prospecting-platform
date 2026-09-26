@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.dependencies.current_user import get_current_user
@@ -15,6 +17,7 @@ from app.integrations.apify_social import (
 )
 from app.integrations.open_places import OpenPlacesProviderError
 from app.integrations.serper import SerperProviderError
+from app.integrations.geocoding import GeocodingProviderError
 from app.models.user import User
 from app.services.local_business_discovery import LocalBusinessDiscoveryError
 from app.schemas.company_discovery import (
@@ -45,6 +48,7 @@ from app.services.discovery_queue_preparation import prepare_discovery_opportuni
 
 
 router = APIRouter(tags=["Company Discovery"])
+logger = logging.getLogger(__name__)
 
 
 @router.post(
@@ -105,12 +109,26 @@ def discover_companies_endpoint(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(error),
         ) from error
-    except (
-        OpenPlacesProviderError,
-        SerperProviderError,
-        RuntimeError,
-        ValueError,
-    ) as error:
+    except GeocodingProviderError as error:
+        logger.exception("Company discovery geocoding provider failed")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Location lookup is temporarily unavailable. Please try again.",
+        ) from error
+    except OpenPlacesProviderError as error:
+        logger.exception("Company discovery Open Places provider failed")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Local business search is temporarily unavailable. Please try again.",
+        ) from error
+    except SerperProviderError as error:
+        logger.exception("Company discovery Serper provider failed")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Web search is temporarily unavailable. Please try again.",
+        ) from error
+    except (RuntimeError, ValueError) as error:
+        logger.exception("Company discovery failed unexpectedly")
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Company discovery failed. Please try again.",
