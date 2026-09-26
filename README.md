@@ -44,6 +44,12 @@ OpportunityCue uses AI for goal interpretation, specialist research summaries, a
 
 ## Product walkthrough
 
+### Prospecting workspace
+
+The overview keeps active campaigns, prospects that need research, qualified prospects, and the next action in one place.
+
+![OpportunityCue prospecting workspace](docs/screenshots/01-overview.png)
+
 ### Discover research candidates
 
 OpportunityCue searches for businesses that match the campaign and explains why each candidate still needs verification before qualification.
@@ -63,6 +69,14 @@ In the 20 Finch Dental run, the official website was accepted before PageSpeed a
 The report separates confirmed opportunities from unresolved checks. A missing signal does not become a positive claim, and a discovery assumption does not automatically become qualification evidence.
 
 The 20 Finch Dental result qualified on measured mobile performance while leaving the patient contact-path check unresolved.
+
+![20 Finch Dental qualified opportunity](docs/screenshots/04-qualified-report.png)
+
+### Turn the evidence into a usable brief
+
+The full brief carries the qualification result into a practical prospecting output. It includes the evidence-backed recommendation, grounded email and SMS drafts, verified contact paths, unresolved checks, caveats, and the sources collected during research.
+
+![20 Finch Dental full evidence brief](docs/screenshots/05-full-evidence-brief.png)
 
 ## Product rules
 
