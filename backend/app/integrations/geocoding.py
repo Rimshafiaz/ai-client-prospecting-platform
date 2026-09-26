@@ -3,13 +3,14 @@ coordinates. Production uses Nominatim (OpenStreetMap) — free, keyless,
 deterministic. Tests mock the abstraction."""
 
 from dataclasses import dataclass
-from urllib.parse import quote
-
 import httpx
 
 
 NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search"
-USER_AGENT = "AI-Sales-Intelligence-Platform/1.0 (geocoding)"
+USER_AGENT = (
+    "OpportunityCue/1.0 "
+    "(+https://github.com/Rimshafiaz/ai-client-prospecting-platform)"
+)
 DEFAULT_TIMEOUT_SECONDS = 10.0
 
 
@@ -25,6 +26,10 @@ class GeocodingProvider:
         raise NotImplementedError
 
 
+class GeocodingProviderError(RuntimeError):
+    pass
+
+
 class NominatimGeocodingProvider:
     def __init__(
         self,
@@ -38,21 +43,31 @@ class NominatimGeocodingProvider:
         clean_query = query.strip()
         if not clean_query:
             return None
-        url = (
-            f"{NOMINATIM_SEARCH_URL}?q={quote(clean_query)}"
-            "&format=json&limit=1"
-        )
+        client = self._client or httpx.Client(follow_redirects=True)
         try:
-            with httpx.Client(
+            response = client.get(
+                NOMINATIM_SEARCH_URL,
+                params={"q": clean_query, "format": "json", "limit": 1},
                 timeout=self.timeout_seconds,
                 headers={"User-Agent": USER_AGENT},
-                follow_redirects=True,
-            ) as client:
-                response = client.get(url)
-                response.raise_for_status()
-                payload = response.json()
-        except Exception:
-            return None
+            )
+            response.raise_for_status()
+            payload = response.json()
+        except httpx.TimeoutException as error:
+            raise GeocodingProviderError("Location provider request timed out.") from error
+        except httpx.HTTPStatusError as error:
+            raise GeocodingProviderError(
+                f"Location provider returned HTTP {error.response.status_code}."
+            ) from error
+        except httpx.RequestError as error:
+            raise GeocodingProviderError("Location provider request failed.") from error
+        except ValueError as error:
+            raise GeocodingProviderError(
+                "Location provider returned an invalid response."
+            ) from error
+        finally:
+            if self._client is None:
+                client.close()
 
         results = payload if isinstance(payload, list) else []
         first = results[0] if results else None
