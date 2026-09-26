@@ -76,7 +76,7 @@ The 20 Finch Dental result qualified on measured mobile performance while leavin
 
 The full brief carries the qualification result into a practical prospecting output. It includes the evidence-backed recommendation, grounded email and SMS drafts, verified contact paths, unresolved checks, caveats, and the sources collected during research.
 
-![20 Finch Dental full evidence brief](docs/screenshots/05-full-evidence-brief.png)
+![20 Finch Dental full evidence brief](docs/screenshots/05-full-evidence-brief.jpeg)
 
 ## Product rules
 
