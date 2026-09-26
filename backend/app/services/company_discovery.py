@@ -45,7 +45,7 @@ def check_supported_objective(
             "Add a location to continue.",
         )
     sectors, has_generic_clinic = resolve_discovery_scope(
-        goal or " ".join(objective.target_sectors)
+        " ".join(filter(None, [goal, *objective.target_sectors]))
     )
     if len(sectors) > 1 or (has_generic_clinic and sectors):
         choices = ", ".join(sectors)
@@ -81,7 +81,9 @@ def parse_discovery_objective(
     updates: dict[str, object] = {}
     if request.region and not objective.target_geographies:
         updates["target_geographies"] = [request.region]
-    sectors, has_generic_clinic = resolve_discovery_scope(request.goal)
+    sectors, has_generic_clinic = resolve_discovery_scope(
+        " ".join([request.goal, *objective.target_sectors])
+    )
     if len(sectors) == 1 and not has_generic_clinic:
         updates["target_sectors"] = sectors
     return objective.model_copy(update=updates) if updates else objective

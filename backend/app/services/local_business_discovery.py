@@ -68,7 +68,8 @@ _INDUSTRY_PATTERNS: dict[IndustryOverlayId, re.Pattern[str]] = {
         r"\b(?:beauty|salons?|spas?|wellness)\b", re.IGNORECASE
     ),
     IndustryOverlayId.RESTAURANTS_CAFES: re.compile(
-        r"\b(?:restaurants?|cafes?)\b", re.IGNORECASE
+        r"\b(?:restaurants?|cafes?|food\s*(?:and|&)\s*beverage|hospitality)\b",
+        re.IGNORECASE,
     ),
     IndustryOverlayId.FITNESS_GYMS: re.compile(
         r"\b(?:fitness|gyms?)\b", re.IGNORECASE

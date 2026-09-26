@@ -31,6 +31,8 @@ def objective(*, sectors: list[str] | None = None) -> DiscoveryObjective:
 @pytest.mark.parametrize(
     ("goal", "expected"),
     [
+        ("Find restaurants in Lahore", "Restaurants & cafes"),
+        ("Find cafes in Lahore", "Restaurants & cafes"),
         ("Find dental practices in Lahore", "Dental & selected clinics"),
         ("Find dentists in Lahore", "Dental & selected clinics"),
         ("Find beauty salons in Lahore", "Beauty & wellness"),
@@ -57,6 +59,37 @@ def test_generic_clinic_is_rejected_before_discovery():
 
     assert supported is False
     assert message and "Generic clinics are not supported yet" in message
+
+
+def test_related_restaurant_taxonomy_labels_collapse_to_one_supported_vertical():
+    parsed_objective = objective(
+        sectors=["Restaurants", "Food and Beverage", "Hospitality"]
+    )
+
+    assert check_supported_objective(parsed_objective) == (True, None)
+
+    with patch(
+        "app.services.company_discovery.run_goal_parser_task",
+        return_value=parsed_objective,
+    ):
+        normalized = parse_discovery_objective(
+            ParseDiscoveryRequest(
+                goal="Find restaurants in Faisalabad that need website services"
+            )
+        )
+
+    assert normalized.target_sectors == ["Restaurants & cafes"]
+
+
+def test_genuinely_mixed_supported_verticals_still_require_narrowing():
+    supported, message = check_supported_objective(
+        objective(sectors=["Restaurants", "Beauty salon"])
+    )
+
+    assert supported is False
+    assert message and "more than one business category" in message
+    assert "Restaurants & cafes" in message
+    assert "Beauty & wellness" in message
 
 
 def test_mixed_goal_requires_one_primary_vertical_before_discovery():
