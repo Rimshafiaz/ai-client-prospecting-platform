@@ -55,7 +55,7 @@ OPPORTUNITY_MODELS: dict[OpportunityModelId, OpportunityModel] = {
         ),
         required_signal_types=(
             EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED,
-            EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE,
+            EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE,
         ),
     ),
     "web_conversion.mobile_performance": OpportunityModel(

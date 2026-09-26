@@ -141,12 +141,14 @@ def run_research(request_id: UUID) -> None:
             gate_result.state is EvidenceGateState.READY_FOR_DEEPER_RESEARCH
             and target.no_listed_official_website
             and resolved_company is not None
+            and resolved_company.is_confident
+            and resolved_company.website is None
             and resolved_company.source is not None
         ):
             upsert_research_evidence(
                 db=db,
                 research_request_id=research_request.id,
-                signal_type=EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE,
+                signal_type=EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE,
                 evidence_type=EvidenceType.OBSERVED,
                 supporting_value=(
                     "No official website was verified from the accepted identity sources."

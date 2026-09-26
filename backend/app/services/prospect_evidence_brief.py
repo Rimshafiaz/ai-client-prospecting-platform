@@ -235,10 +235,13 @@ def _assessment_summary(
     model_id = qualification.opportunity_model_id
     numeric = next((item.numeric_value for item in evidence if item.numeric_value is not None), None)
     if model_id == "web_conversion.no_verified_web_presence":
+        if qualification.state is OpportunityQualificationState.NOT_ELIGIBLE:
+            return "An official website was verified."
+        if qualification.state is OpportunityQualificationState.LIKELY:
+            return "Bounded website verification did not identify an official website."
         return (
-            "An official website was verified."
-            if qualification.state is OpportunityQualificationState.NOT_ELIGIBLE
-            else "No official website was verified from the accepted sources."
+            "A discovery source did not list a website, but research-level website "
+            "verification remains unresolved."
         )
     if model_id == "web_conversion.mobile_performance" and numeric is not None:
         return f"The mobile PageSpeed score was {numeric:g}/100."

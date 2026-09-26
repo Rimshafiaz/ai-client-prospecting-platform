@@ -22,6 +22,7 @@ class DiscoveryShortlistError(Exception):
 SIGNAL_ACTIONS = {
     EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED: NextEvidenceAction.VERIFY_BUSINESS_IDENTITY,
     EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE: NextEvidenceAction.VERIFY_OFFICIAL_WEBSITE,
+    EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE: NextEvidenceAction.VERIFY_OFFICIAL_WEBSITE,
     EvidenceSignalType.OFFICIAL_WEBSITE_CONFIRMED: NextEvidenceAction.VERIFY_OFFICIAL_WEBSITE,
     EvidenceSignalType.WEBSITE_MOBILE_PERFORMANCE_MEASURED: NextEvidenceAction.AUDIT_MOBILE_PERFORMANCE,
     EvidenceSignalType.WEBSITE_BOOKING_PATH_MANUAL_ONLY: NextEvidenceAction.INSPECT_BOOKING_CONTACT_PATH,
@@ -39,6 +40,7 @@ SIGNAL_ACTIONS = {
 SIGNAL_PRIORITY = {
     EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED: 0,
     EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE: 10,
+    EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE: 10,
     EvidenceSignalType.OFFICIAL_WEBSITE_CONFIRMED: 10,
     EvidenceSignalType.OFFICIAL_SOCIAL_PROFILE_CONFIRMED: 10,
     EvidenceSignalType.BUSINESS_ACTIVITY_CONFIRMED: 20,
@@ -69,6 +71,7 @@ ACTION_PRIORITY = {
 }
 
 WEBSITE_RESEARCH_SIGNALS = {
+    EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE,
     EvidenceSignalType.WEBSITE_MOBILE_PERFORMANCE_MEASURED,
     EvidenceSignalType.WEBSITE_BOOKING_PATH_MANUAL_ONLY,
     EvidenceSignalType.WEBSITE_RESERVATION_PATH_MANUAL_ONLY,
@@ -198,6 +201,11 @@ def evaluate_model(
         for signal_type in model.required_signal_types
         if signal_type in observed_signal_types
     ]
+    if (
+        model.id == "web_conversion.no_verified_web_presence"
+        and EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE in observed_signal_types
+    ):
+        observed_for_model.append(EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE)
     if EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED in missing_signal_types:
         return OpportunityModelShortlistEvaluation(
             model_id=model.id,
@@ -227,7 +235,8 @@ def evaluate_model(
                 missing_signal_types=missing_signal_types,
                 reason=(
                     "The verified business identity matches the campaign, but the "
-                    "selected check requires bounded specialist research."
+                    "selected check requires bounded specialist research. This permits "
+                    "research, not outreach."
                 ),
                 next_evidence_action=next_action,
             )

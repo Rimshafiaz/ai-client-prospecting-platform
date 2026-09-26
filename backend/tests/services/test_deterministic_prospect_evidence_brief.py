@@ -107,7 +107,7 @@ def test_nonqualified_v2_report_has_no_approach_or_outreach(verdict):
         assert brief.unresolved_evidence
 
 
-def test_not_verified_website_is_evidence_not_an_unresolved_requirement():
+def test_research_verified_website_absence_is_evidence_not_an_unresolved_requirement():
     qualifications = [
         BriefQualification(
             opportunity_model_id="web_conversion.no_verified_web_presence",
@@ -159,3 +159,40 @@ def test_not_verified_website_is_evidence_not_an_unresolved_requirement():
         "Mobile performance could not be evaluated because no official website was verified.",
         "The restaurant booking/customer path could not be evaluated because no official website was verified.",
     ]
+
+
+def test_discovery_only_website_absence_is_rendered_as_unresolved():
+    context = _context(AggregateVerdict.NEEDS_REVIEW).model_copy(
+        update={
+            "qualifications": [
+                BriefQualification(
+                    opportunity_model_id="web_conversion.no_verified_web_presence",
+                    state="insufficient_evidence",
+                    reason=(
+                        "More evidence is needed before this Opportunity Model can be "
+                        "evaluated: no verified official web presence."
+                    ),
+                    evaluated_at=NOW,
+                )
+            ],
+            "website_research": WebsiteResearchOutput(
+                website_status="not_verified",
+                findings=[],
+                evidence_gaps=[],
+                caveats=[
+                    "A directory omission does not prove that no website exists."
+                ],
+            ),
+        }
+    )
+
+    brief = assemble_prospect_evidence_brief(context, None)
+
+    assert brief.aggregate_verdict is AggregateVerdict.NEEDS_REVIEW
+    assert brief.opportunity_assessment[0].result == "unresolved"
+    assert brief.opportunity_assessment[0].evidence_summary == (
+        "A discovery source did not list a website, but research-level website "
+        "verification remains unresolved."
+    )
+    assert brief.recommended_approach is None
+    assert brief.outreach_drafts == []

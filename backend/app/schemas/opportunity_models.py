@@ -46,6 +46,7 @@ class EvidenceSignalType(str, Enum):
     BUSINESS_IDENTITY_CONFIRMED = "business_identity_confirmed"
     OFFICIAL_WEBSITE_CONFIRMED = "official_website_confirmed"
     NO_LISTED_OFFICIAL_WEBSITE = "no_listed_official_website"
+    NO_VERIFIED_OFFICIAL_WEB_PRESENCE = "no_verified_official_web_presence"
     WEBSITE_MOBILE_PERFORMANCE_MEASURED = "website_mobile_performance_measured"
     WEBSITE_BOOKING_PATH_MANUAL_ONLY = "website_booking_path_manual_only"
     WEBSITE_RESERVATION_PATH_MANUAL_ONLY = "website_reservation_path_manual_only"

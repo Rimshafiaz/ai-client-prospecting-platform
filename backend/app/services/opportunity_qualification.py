@@ -221,6 +221,20 @@ def _evaluate_model(
             supporting_evidence_keys=[],
         )
 
+    if (
+        model.id == "web_conversion.no_verified_web_presence"
+        and _for_signal(evidence, EvidenceSignalType.OFFICIAL_WEBSITE_CONFIRMED)
+    ):
+        official_website = _for_signal(
+            evidence, EvidenceSignalType.OFFICIAL_WEBSITE_CONFIRMED
+        )
+        return QualificationDecision(
+            model=model,
+            state=OpportunityQualificationState.NOT_ELIGIBLE,
+            reason="A verified official website is now available for this business.",
+            supporting_evidence_keys=[item.key for item in official_website],
+        )
+
     missing = [
         signal_type
         for signal_type in model.required_signal_types
@@ -243,23 +257,15 @@ def _evaluate_model(
     if model.id == "social_presence.dormant_official_presence":
         return _social_dormancy_decision(model, evidence)
     if model.id == "web_conversion.no_verified_web_presence":
-        if _for_signal(evidence, EvidenceSignalType.OFFICIAL_WEBSITE_CONFIRMED):
-            return QualificationDecision(
-                model=model,
-                state=OpportunityQualificationState.NOT_ELIGIBLE,
-                reason="A verified official website is now available for this business.",
-                supporting_evidence_keys=[
-                    item.key
-                    for item in _for_signal(evidence, EvidenceSignalType.OFFICIAL_WEBSITE_CONFIRMED)
-                ],
-            )
-        no_website = _for_signal(evidence, EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE)
+        no_website = _for_signal(
+            evidence, EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE
+        )
         return QualificationDecision(
             model=model,
             state=OpportunityQualificationState.LIKELY,
             reason=(
-                "The traceable discovery evidence did not list an official website. "
-                "This supports a no-verified-web-presence review, not a claim that no website exists."
+                "Bounded identity-aware website verification completed without verifying "
+                "an official website. This does not prove that no website exists elsewhere."
             ),
             supporting_evidence_keys=[item.key for item in no_website],
         )

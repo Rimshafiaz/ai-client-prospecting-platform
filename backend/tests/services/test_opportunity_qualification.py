@@ -14,6 +14,7 @@ from app.schemas.opportunity_qualification import (
     OpportunityQualificationState,
 )
 from app.services.opportunity_model_catalog import get_opportunity_model
+from app.services.aggregate_verdict import AggregateVerdict, aggregate_verdict
 from app.services.opportunity_qualification import (
     QualificationEvidence,
     _evaluate_model,
@@ -66,6 +67,48 @@ class FakeSession:
 
 
 class TestOpportunityModelEvaluation:
+    def test_discovery_no_listed_website_alone_is_insufficient_evidence(self):
+        decision = _evaluate_model(
+            get_opportunity_model("web_conversion.no_verified_web_presence"),
+            IndustryOverlayId.BEAUTY_WELLNESS,
+            [
+                evidence(EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED),
+                evidence(EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE),
+            ],
+        )
+
+        assert decision.state is OpportunityQualificationState.INSUFFICIENT_EVIDENCE
+        assert "no verified official web presence" in decision.reason
+
+    def test_not_verified_status_without_research_level_evidence_is_insufficient(self):
+        decision = _evaluate_model(
+            get_opportunity_model("web_conversion.no_verified_web_presence"),
+            IndustryOverlayId.RESTAURANTS_CAFES,
+            [
+                evidence(EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED),
+                evidence(EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE),
+            ],
+        )
+
+        assert decision.state is OpportunityQualificationState.INSUFFICIENT_EVIDENCE
+        assert aggregate_verdict([decision.state]) is AggregateVerdict.NEEDS_REVIEW
+
+    def test_research_level_no_verified_web_presence_is_likely(self):
+        decision = _evaluate_model(
+            get_opportunity_model("web_conversion.no_verified_web_presence"),
+            IndustryOverlayId.BEAUTY_WELLNESS,
+            [
+                evidence(EvidenceSignalType.BUSINESS_IDENTITY_CONFIRMED),
+                evidence(EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE),
+                evidence(EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE),
+            ],
+        )
+
+        assert decision.state is OpportunityQualificationState.LIKELY
+        assert decision.supporting_evidence_keys == [
+            "evidence:no_verified_official_web_presence"
+        ]
+
     def test_low_mobile_score_is_a_likely_mobile_performance_opportunity(self):
         decision = _evaluate_model(
             get_opportunity_model("web_conversion.mobile_performance"),

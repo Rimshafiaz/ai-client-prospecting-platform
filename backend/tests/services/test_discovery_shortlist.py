@@ -151,7 +151,10 @@ class TestDiscoveryShortlist:
 
         evaluation = response.candidates[0].model_evaluations[0]
         assert evaluation.state is DiscoveryShortlistState.ELIGIBLE_FOR_DEEPER_RESEARCH
-        assert evaluation.next_evidence_action is NextEvidenceAction.NO_ACTION
+        assert (
+            evaluation.next_evidence_action
+            is NextEvidenceAction.VERIFY_OFFICIAL_WEBSITE
+        )
         assert "not outreach" in evaluation.reason
 
     def test_mobile_model_requests_measurement_instead_of_claiming_a_performance_problem(self):

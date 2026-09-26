@@ -253,6 +253,9 @@ def _required_specialist_output(outputs, namespace, model, required):
 def _signal_family(signal: EvidenceSignalType) -> ServiceFamily | None:
     if signal in SOCIAL_SIGNALS:
         return ServiceFamily.SOCIAL_PRESENCE_CONTENT
-    if signal.value.startswith("website_") or signal is EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE:
+    if signal.value.startswith("website_") or signal in {
+        EvidenceSignalType.NO_LISTED_OFFICIAL_WEBSITE,
+        EvidenceSignalType.NO_VERIFIED_OFFICIAL_WEB_PRESENCE,
+    }:
         return ServiceFamily.WEB_CONVERSION
     return None
