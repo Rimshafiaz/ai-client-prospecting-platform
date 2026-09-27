@@ -1,7 +1,7 @@
 import time
 import uuid
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
@@ -91,3 +91,20 @@ def root():
 @app.get("/health", summary="Health check", tags=["Health"])
 def health():
     return {"status" : "healthy"}
+
+
+@app.get("/ready", summary="Readiness check", tags=["Health"])
+def ready():
+    from app.db.session import SessionLocal
+    from sqlalchemy import text
+    from sqlalchemy.exc import SQLAlchemyError
+
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "ready"}
+    except SQLAlchemyError as error:
+        logger.exception("Database readiness check failed")
+        raise HTTPException(status_code=503, detail="Database is not ready.") from error
+    finally:
+        db.close()
